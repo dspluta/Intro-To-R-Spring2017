@@ -1,0 +1,102 @@
+---
+title: "Intro to R"
+author: "Dustin Pluta"
+date: "April 30, 2017"
+output: pdf_document
+---
+
+# First Steps
+
+Please complete these steps before the introductory workshop, to be held on May 10th.  
+
+  1. [Install R](https://cran.r-project.org/)
+  
+  2. [Install R Studio](https://www.rstudio.com/products/rstudio/download/)
+
+  3. I strongly recommend working through these two introductory tutorials before the workshop:
+  
+      + [_A (very) short introduction to R_](https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf)
+
+      + [Try R (Free Code School Tutorial)](https://www.codeschool.com/courses/try-r)
+  
+  4. Install packages:
+  
+      + shiny
+      
+      + tibble
+      
+      + ggplot2
+      
+      + dplyr
+      
+  5. Create a [GitHub](https://github.com) account if you don't already have one.
+      
+
+# Workshop Syllabus
+
+This list is to give you an idea of the concepts we'll be covering.  You may read ahead on these topics to develop some familiarity before the workshop, particularly the basic commands and data types.  We will be working through these concepts to develop an analysis of some real-world time series data from a biological experiment, which I will provide.
+
+## Overview of Basic Concepts
+
+  1. Basic Commands
+
+        + Arithmetic
+        
+        + Printing
+        
+  2. Variables and Data Types
+    
+        + Numerics
+        
+        + Characters
+        
+        + Booleans
+        
+        + Factors
+        
+        + Vectors
+        
+        + Lists
+        
+        + Matrices and Arrays
+        
+        + Data Frames
+        
+  3. Functions
+    
+  4. Packages
+    
+## Preparing Data
+
+  1. I/O
+  
+  2. Data Frames and tibbles
+    
+  3. Manipulating and Cleaning data
+    
+        + base methods
+        
+        + dplyr
+    
+  4. General Guidelines for Data Management
+    
+    
+## Analyzing Data
+    
+  1. Choosing the model.
+    
+  2. Fitting the model.
+  
+  3. Diagnostics.
+    
+  4. Interpretting the results.
+    
+  5. Visualization.
+    
+    
+## Additional Topics
+
+  1. Documenting the analysis process.
+  
+  2. Preparing a report.
+    
