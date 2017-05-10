@@ -1,0 +1,859 @@
+---
+title: "Intro to R"
+author: "Dustin Pluta"
+date: "May 9, 2017"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, hold = TRUE, collapse = TRUE, cache = FALSE)
+```
+
+---
+
+## Workshop Objectives
+
+1. Crash course in R programming fundamentals.
+
+
+2. Learn basic R syntax and style.
+
+
+3. Perform computations of varying complexity, from simple arithmetic, up through 
+statistical modeling.
+
+
+4. Practice working with data in R: reading in, viewing, cleaning, manipulating, 
+and analyzing.
+
+
+5. Learn R base plot utilities.
+
+
+6. Document results of analysis using R Markdown.
+
+---
+
+## Philosophy of `R`
+
+- Function as a high-level, interactive "calculator" for statistical modelling
+
+- Facilitate the development of complex data analysis pipelines
+
+- Designed with convenience for data analysis procedures (mostly)
+
+- Supports the development of data analysis reports, visualizations, and interactive apps.
+
+    + R Markdown
+    
+    + ggplot, plotly, and many other packages
+    
+    + R Shiny
+
+---
+
+## Basic Commands
+### Variables and Data Types
+   
+Here is a list of the most important R data types: 
+        
+- Numerics: `1, pi, 0.325, -Inf`
+
+```{r}
+1 + pi
+2 - Inf
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Characters: 'a', "b", "Hello", "DSJF(@$U&AJfdaf32"
+
+```{r}
+x = 'a'
+x
+
+y <- "Hello!"
+print(y)
+```
+
+- Booleans: TRUE, FALSE
+
+```{r}
+y <- 1
+y == 1
+y == 17
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Factors: Categorical strings, used for modeling
+```{r}
+as.factor(c("female", "male"))
+```
+
+
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Missing Values can be represented by `NA` or `NaN`:
+
+```{r}
+z <- NA
+is.na(z)
+y <- NaN
+is.na(y)
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Vectors: 
+
+```{r}
+x = c(1, 2, 3)
+x <- 1:3
+y <- c(-10, pi, 4, -10:-7)
+chars <- c("1", "b", "Blah")
+x
+y
+chars
+```    
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Lists:
+
+```{r}
+dat.list <- list(1, "alpha", c(1, 2))
+```
+        
+- Matrices: Numeric arrays of numbers
+
+```{r}
+X <- matrix(11:19, nrow = 3, ncol = 3)
+print(X)
+dim(X)
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- Perhaps the most important data type in R is the `data.frame`
+
+- Data frames are sort of like matrices, but can contain a mix of numerics, characters, 
+and factors in their columns.
+
+    + Each column must have a consistent type
+
+- Data frames are the primary way to store your data for analysis
+
+```{r}
+dat <- data.frame(X)
+names(dat) <- c("HW1", "HW2", "Quiz")
+print(dat)
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- R includes many example data sets to use for convenient testing
+
+```{r}
+data(iris)
+head(iris)
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- There are numerous built-in functions that can extract features and information of the data frame
+
+```{r}
+names(iris)
+nrow(iris)
+ncol(iris)
+class(iris)
+```
+
+---
+
+## Basic Commands
+### Variables and Data Types
+
+- We can access elements of the data frame using index notation (indices start at 1, not 0)
+
+```{r}
+iris[1, 1]
+iris[3, 4]
+iris[1:3, 2:5]
+```
+
+--- 
+
+## Basic Commands
+### Variables and Data Types
+
+- We can access whole rows or columns by omitting the appropriate index
+
+```{r}
+# First Row
+iris[1, ]
+
+# 3rd Column
+iris[, 3]
+```
+
+
+## Basic Commands
+### Variables and Data Types
+
+- We can also access whole columns using the name of the column
+
+```{r}
+iris$Sepal.Length[1:3]
+iris$Species
+```
+
+
+---
+  
+## Basic Commands
+### Arithmetic
+
+```{r, hold = FALSE, collapse = FALSE}
+n <- 100
+2*(1 - 1/n)^n
+2*exp(-1)
+log(1)
+```
+  
+---
+  
+## Linear Algebra
+
+- Often statistical modeling requires matrix computations.
+
+- Important basic linear algebra operations are:
+
+    + Matrix Multiplication: `X %*% Y`
+    
+    + Transpose: `t(X)`
+    
+    + Inverse: `solve(X)`
+    
+    + Determinant: `det(X)`
+    
+    + Eigenvalue Decomposition: `eigen(X)`
+
+
+---
+  
+## Linear Algebra
+
+```{r}
+X <- matrix(c(1, 3:10), nrow = 3, byrow = TRUE)
+Y <- c(1, 0, -1)
+```
+
+```{r}
+X + 2 * Y
+X %*% Y
+```
+
+
+
+---
+  
+## Linear Algebra
+
+- Careful! Usual multiplication with `*` is actually elementwise:
+
+
+```{r}
+X * Y
+```
+
+---
+  
+## Linear Algebra
+
+
+```{r}
+# Transpose
+t(X)
+```
+
+---
+  
+## Linear Algebra
+
+```{r}
+# Inverse
+solve(X)
+solve(X) %*% X
+round(solve(X) %*% X, digits = 2)
+```
+
+
+
+---
+  
+## Linear Algebra
+
+- If dimensions don't match, R will give an error:
+
+```{r, error = TRUE}
+Z <- matrix(c(2, 0, 4, -1), nrow = 2)
+Z
+X %*% Z
+```
+
+---
+
+## Functions
+
+- Function declaration syntax is:
+
+```{r, eval = FALSE}
+func_name <- function(arg1, arg2) {
+  # ... Function Body ... #
+  return(result)
+}
+```
+
+---
+
+## Functions
+
+- For example, let's write a function to find the hypotenuse of a right triangle:
+
+```{r}
+pythag <- function(a, b) {
+  c <- sqrt(a^2 + b^2)
+  return(c)
+}
+pythag(3, 4)
+```
+
+--- 
+
+## Functions
+
+__Exercise:__ Write a function that takes in a vector $x$ and returns the mean.
+
+Wrap this code to make it a function that returns the correct value:
+
+```{r, eval = FALSE}
+x.sum <- 0
+for (i in 1:length(x)) {
+  x.sum <- x.sum + x[i]
+}
+```
+
+```{r, eval = FALSE}
+my.mean <- function(x) {
+  # ...
+  return(result)
+}
+```
+
+
+---
+
+## Functions
+
+This works:
+
+```{r}
+my.mean <- function(x) {
+  x.sum <- 0
+  for (i in 1:length(x)) {
+    x.sum <- x.sum + x[i]
+  } 
+  result <- x.sum/length(x)
+  return(result)
+}
+```
+
+---
+
+## Functions
+
+Test the function:
+
+```{r}
+# Our version
+x <- runif(100, 0, 1)
+my.mean(x)
+```
+
+```{r}
+# Built-in Version
+mean(x)
+```
+
+---
+
+## Functions
+
+Could also do this:
+
+```{r, eval = FALSE}
+my.mean <- function(x) {
+  return(sum(x)/length(x))
+}
+```
+
+
+---
+
+## Functions
+
+- __Programming Tips:__ 
+
+    + Try to write small, tidy functions that do one specific thing well
+    
+    + Perform complicated analyses by stringing together many small functions
+    
+    + This improves code readability, makes it easier to debug when something goes wrong,
+    and leads to cleaner code that can more easily be reused.
+
+---
+   
+## Packages
+
+- There are many useful packages on the `R` repository CRAN.
+
+- Packages are code modules, usually written by statisticians and academic researchers, 
+or by development teams at companies like R Studio.
+
+- Packages provide implementations of many statistical procedures and saves you the trouble
+of having to code up complicated algorithms from scratch.
+
+- Relying on the many built-in `R` functions and the many packages available 
+makes life much easier.
+
+---
+
+## Packages
+
+- Let's install the package for the Time Series Analysis book by Shumway & Stoffer
+
+```{r, eval = FALSE}
+install.packages('astsa')
+```
+  
+- Load the package with `library('pkg_name') `.
+
+```{r}
+library(astsa)
+```
+
+- Useful documentation is available online for all packages on CRAN.
+
+- [`astsa` documentation](https://cran.r-project.org/web/packages/astsa/astsa.pdf)
+
+---   
+    
+## Reading Data
+
+- The easiest file format to work with is '.csv', comma separated values.
+
+- We can read csv files using `read.csv`.
+
+- It is very helpful to read over the documentation carefully
+
+```{r, eval = FALSE}
+?read.csv
+```
+
+```{r}
+dat <- read.csv("fmri_data.csv")
+dim(dat)
+head(names(dat))
+dat[1:4, 1:4]
+```
+
+
+---
+
+## Prepping the Data
+
+The data set is for one subject, 375 brain regions, 290 time pts.
+
+```{r}
+names(dat) <- paste0("ROI", 1:375)
+```
+
+Add a column that indicates the time in seconds (1 time pt = 2 seconds)
+
+```{r}
+dat$t <- seq(2, 2*290, 2)
+```
+
+---   
+    
+## Plotting Data
+
+The base `R` function `plot()` works with many data types and models.  It 
+is the go-to function for simple plotting.
+
+Again, read the documentation thoroughly!
+
+```{r, eval = FALSE}
+?plot
+```
+
+
+---   
+    
+## Plotting Data
+
+
+```{r, fig.height = 5}
+x <- 1:5
+y <- 2 * x + 1
+plot(x, y)
+```
+
+---   
+    
+## Plotting Data
+
+```{r, fig.height = 5.5}
+plot(x, y, ty = 'l', col = 'blue', lwd = 2, lty = 2,
+     xlab = "Soda", ylab = "Pizza", main = "Soda vs Pizza")
+```
+
+---
+
+## Plotting Data
+
+Plot the fMRI data for the first region
+
+```{r, fig.height = 5.5}
+plot(dat$ROI1, ty = 'l', main = "ROI 1")
+```
+
+---
+
+## Preprocessing
+
+- Hmmm, looks okay but there seems to be some strange behavior at the beginning 
+of the time series.
+
+- This is likely caused by "scanner drift" in the fMRI machine.
+
+- When working with neurological data, there are typically many preprocessing steps that we need to perform before analyzing the data.
+
+---
+
+## Preprocessing
+
+- __Exercise 2__ Remove the first 20 time pts (40 secs) and save the result into a vector named `ROI1`.  Then replot the series, including a plot title.
+
+- __Exercise 3__ Use the functions `mean` and `sd` to center and scale the time series so that it has mean 0 and variance 1.
+
+---
+
+## Preprocessing
+
+- __Exercise 4__ The data looks very noisy with lots of high-frequency oscillations, which is common in fMRI data.  Can you think of a 
+reasonable way to smooth the series by reducing these high-frequency oscillations (and hopefully thereby reducing the noise in the data)? 
+
+- __Exercise 5__ Implement a smoothing procedure in `R` on the centered and scaled series.  Plot the smoothed series over the unsmoothed (centered and scaled) series using `lines`.
+
+
+---
+
+## Preprocessing
+
+- __Exercise 6__ Write a function called `preprocess` that takes in a time series $x$ and performs the preprocessing steps in the above exercises:
+
+    1. Remove the first 20 time pts.
+    2. Center and scale.
+    3. Smooth.
+    4. Return the resulting series.
+    
+---
+
+## Preprocessing: Trim
+
+```{r}
+trim <- function(x) {
+  return(x[21:length(x)])
+}
+```
+
+
+---
+
+## Preprocessing: Center and Scale
+
+```{r}
+my.scale <- function(x) {
+  return((x - mean(x))/sd(x))
+}
+```
+ 
+---
+
+## Preprocessing: Smooth
+
+```{r}
+my.smooth <- function(x) {
+  x <- filter(x, rep(1/7, 7), method = "convolution")
+  return(x)
+}
+```
+
+---
+
+## Preprocessing Function
+
+```{r}
+preprocess <- function(x) {
+  x <- trim(x)
+  x <- my.scale(x)
+  x <- my.smooth(x)
+  return(x)
+}
+```
+
+---
+
+```{r}
+ROI1.preproc <- preprocess(dat$ROI1)
+plot(ROI1.preproc, ty = 'l')
+```
+
+---
+```{r}
+ROI1.scale <- my.scale(trim(dat$ROI1))
+plot(ROI1.scale, ty = 'l', col = rgb(0.9, 0.1, 0, 0.7))
+lines(ROI1.preproc, ty = 'l')
+```
+
+---
+
+## Preprocessing
+
+__Question__ Looking better, but there still seems to be a linear trend in the data... how can we remove this?
+
+__Answer__ ...
+
+-- 
+
+Apply Linear Regression and extract the residuals.
+
+---
+
+## Preprocessing
+
+```{r}
+ROI1.preproc <- na.omit(ROI1.preproc)
+time.pts <- 1:length(ROI1.preproc)
+fit <- lm(ROI1.preproc ~ time.pts)
+```
+---
+
+## Preprocessing
+
+```{r}
+plot(ROI1.preproc)
+lines(fit$fitted.values)
+```
+
+
+---
+
+## Preprocessing
+
+```{r}
+plot(fit$residuals, ty = 'l')
+```
+
+
+---
+
+## Preprocessing Function
+Update the preprocessing function to include this linear detrending.
+
+```{r}
+detrend <- function(x) {
+  x <- na.omit(x)
+  time.pts <- 1:length(x)
+  return(lm(x ~ time.pts)$residuals)
+}
+
+preprocess <- function(x) {
+  x <- trim(x)
+  x <- my.scale(x)
+  x <- my.smooth(x)
+  x <- detrend(x)
+  return(x)
+}
+```
+
+
+---
+
+## Preprocessing
+
+```{r}
+ROI1.preproc <- preprocess(dat$ROI1)
+plot(ROI1.preproc, ty = 'l')
+```
+
+---
+
+## Preprocessing
+
+We can preprocess all of the data simultaneously using our function and 
+`apply`:
+
+```{r}
+?apply
+dat.preproc <- apply(dat, 2, preprocess)
+```
+
+---
+
+```{r}
+plot(dat.preproc[, 1], ty = 'l')
+```
+
+---
+
+## Writing Data
+
+To write out the prepocessed data, we can use the `write.csv` function:
+
+```{r, eval = FALSE}
+write.csv(x, "fmri_ROI1_preproc.csv")
+```
+
+---    
+    
+## Analyzing Data
+    
+Analysis steps:
+
+  0. Data preparation: collecting, cleaning, organizing, preprocessing.
+
+  1. Exploratory data analysis.
+  
+  2. Choose the model.
+    
+  3. Fit the model.
+  
+  4. Diagnostics.
+    
+  5. Interpret the results.
+    
+  6. Visualize and report results.
+
+---
+
+## Modelling
+
+Let's fit a simple AR(2) model to the ROI series we just looked at.
+
+The AR(2) model has the form
+
+$$X(t) = \phi_1 X(t - 1) + \phi_2 X(t - 2) + w_t,$$
+
+where $w_t \sim N(0, \sigma^2)$.
+
+- We can use the base `R` function `ar` to easily fit the model
+
+---
+
+## Modelling
+
+```{r}
+fit <- ar(ROI1.preproc, order.max = 2)
+summary(fit)
+```
+
+---
+
+## Modelling
+
+```{r}
+fit
+```
+
+---
+
+## Diagnostics
+
+We can evaluate the fit by looking at the Autocorrelation and Partial Autocorrelation of the residuals.
+
+```{r, eval = FALSE}
+par(mfrow = c(2, 1))
+acf(na.omit(fit$resid))
+pacf(na.omit(fit$resid))
+```
+
+---
+
+## Diagnostics
+
+```{r, echo = FALSE}
+par(mfrow = c(2, 1))
+acf(na.omit(fit$resid))
+pacf(na.omit(fit$resid))
+```
+
+---
+
+## Diagnostics
+
+If the model fit is good, we expect these plots to be flat and 
+within the blue lines.
+
+It seems the model is a mediocre fit to the data, with some clear correlation left in the residuals for a few lags.
+
+---
+
+## Next Analysis Steps
+
+Likely need to reconsider the model.  The plot of the preprocessed data does not seem stationary, so a simple AR model is likely not appropriate, should consider other modelling approaches.
+
+---
+
+## Next Steps
+
+__Exercise 7__ Use the `ar` function to fit an arbitrary order AR model to the preprocessed ROI1 data.  Extract the AIC for this model and the AR(2) and compare.
+
+__Exercise 8__ Apply a log transformation to the original ROI1 data (before preocessing), then repeat the preprocessing steps and fit an AR(2).  Examine the acf and pacf of the residuals.  Does the model fit seem to be any better or worse?
+
+---
+
+## Resources
+
+  1. [R Programming for Data Science](https://leanpub.com/rprogramming)
+  
+  2. Many courses on [Coursera](https://coursera.com), just search for "R"" or "Data Science."
+  
